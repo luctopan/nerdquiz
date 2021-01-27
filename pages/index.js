@@ -1,9 +1,12 @@
-import styled from 'styled-components'
-import db from '../db.json'
-import Widget from '../src/components/Widget'
-import QuizBackground from '../src/components/QuizBackground'
-import Footer from '../src/components/Footer'
-import GitHubCorner from '../src/components/GitHubCorner'
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import db from '../db.json';
+import Widget from '../src/components/Widget';
+import QuizBackground from '../src/components/QuizBackground';
+import Footer from '../src/components/Footer';
+import GitHubCorner from '../src/components/GitHubCorner';
 
 export const QuizContainer = styled.div`
   width: 100%;
@@ -14,29 +17,54 @@ export const QuizContainer = styled.div`
     margin: auto;
     padding: 15px;
   }
-`
+`;
 
 export default function Home() {
+  const router = useRouter();
+  const [name, setName] = React.useState('');
+  //console.log('Retorno do useState: ', name, setName);
   return (
     <QuizBackground backgroundImage={db.bg}>
+      <Head>
+        <title>NerdQuiz | luctopan</title>
+      </Head>
       <QuizContainer>
         <Widget>
           <Widget.Header>
-            <h1>Nerd Quiz</h1>
+            <h1>NerdQuiz</h1>
           </Widget.Header>
           <Widget.Content>
-            <p>lorem ipsum lorem ipsum</p>
+            <form onSubmit={function(infosDoEvento) {
+              infosDoEvento.preventDefault();
+              router.push(`/quiz?name=${name}`);
+              console.log('Fazendo um submit por meio do React.')
+            }}
+            >
+              <input
+                onChange = {function(infosDoEvento) {
+                  // console.log(infosDoEvento.target.value);
+                  // name = infosDoEvento.target.value;
+                  setName(infosDoEvento.target.value);
+                }}
+                placeholder="Qual seu nome?"
+              />
+              <button type="submit" disabled={name.length === 0}>
+                Play!
+              </button>
+            </form>
           </Widget.Content>
         </Widget>
         <Widget>
           <Widget.Content>
-            <h1>Quizes da galera</h1>
-            <p>lorem ipsum lorem ipsum</p>
+            <h1>Quizzes dos nerds:</h1>
+            <p>1.</p>
+            <p>2.</p>
+            <p>3.</p>
           </Widget.Content>
         </Widget>
         <Footer />
       </QuizContainer>
       <GitHubCorner projectUrl="https://github.com/luctopan" />
     </QuizBackground>
-  )
+  );
 }
